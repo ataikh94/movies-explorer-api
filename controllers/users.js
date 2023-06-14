@@ -39,6 +39,7 @@ module.exports.updateUserInfo = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         return next(new BadRequest(badRequestErrorMessage));
       }
+      if (err.code === 11000) return next(new Conflict(conflictErrorMessage));
       return next(err);
     });
 };
@@ -68,7 +69,9 @@ module.exports.login = (req, res, next) => {
         .then((matched) => {
           if (!matched) return next(new Unauthorized('Неправильные почта или пароль'));
           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : devSecretKey, { expiresIn: '7d' });
-          return res.send({ token, data: user.toJSON() });
+          const userObj = user.toObject();
+          delete userObj.password;
+          return res.send({ token, userObj });
         });
     })
     .catch(next);

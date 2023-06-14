@@ -7,16 +7,16 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
-const { limiter, DB_URL } = require('./configs/generalConfig');
+const { limiter } = require('./configs/generalConfig');
 const { requestLogger } = require('./middlewares/logger');
 const router = require('./routes');
 const centralErrorHandler = require('./configs/centralErrorHandler');
 
 const app = express();
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, NODE_ENV, DB_URL } = process.env;
 
-mongoose.connect(DB_URL, {
+mongoose.connect(NODE_ENV === 'production' ? DB_URL : 'mongodb://localhost:27017/bitfilmsdb', {
   useNewUrlParser: true,
 });
 

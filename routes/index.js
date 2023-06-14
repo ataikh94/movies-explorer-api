@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { errorLogger } = require('express-winston');
+const { errorLogger } = require('../middlewares/logger');
 const userRouter = require('./users');
 const movieRouter = require('./movies');
 const auth = require('../middlewares/auth');
@@ -13,8 +13,8 @@ router.use(auth);
 router.use(userRouter);
 router.use(movieRouter);
 
-router.use(errorLogger);
-
 router.use('/*', auth, (req, res, next) => next(new NotFoundError('Страница не найдена')));
+
+router.use(errorLogger);
 
 module.exports = router;
