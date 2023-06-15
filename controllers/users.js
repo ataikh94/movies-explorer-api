@@ -39,7 +39,6 @@ module.exports.updateUserInfo = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         return next(new BadRequest(badRequestErrorMessage));
       }
-      if (err.code === 11000) return next(new Conflict(conflictErrorMessage));
       return next(err);
     });
 };
